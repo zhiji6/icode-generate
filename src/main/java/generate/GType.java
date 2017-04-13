@@ -11,8 +11,8 @@ public enum GType {
     DATA_TYPE,
     REMARKS,
     IS_AUTOINCREMENT,
-    FKCOLUMN_NAME
-
+    FKCOLUMN_NAME,
+    YES
     ;
 
 }

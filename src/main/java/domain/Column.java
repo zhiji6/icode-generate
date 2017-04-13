@@ -6,11 +6,11 @@ package domain;
 public class Column {
 
     private String columnName;
-    private String columnType;
+    private Integer columnType;
     private String columnComment;
     private Boolean isPrimary = false; //主键？
     private Boolean isAutoIncrement = false;  //自动递增？
-    private Boolean isNullAble = false;//允许空
+        private Boolean isNullAble = false;//允许空
     private Boolean isForeignKey = false; //暂时弃用
     private String fieldName;
     private String fieldType;
@@ -26,11 +26,11 @@ public class Column {
         this.columnName = columnName;
     }
 
-    public String getColumnType() {
+    public Integer getColumnType() {
         return columnType;
     }
 
-    public void setColumnType(String columnType) {
+    public void setColumnType(Integer columnType) {
         this.columnType = columnType;
     }
 

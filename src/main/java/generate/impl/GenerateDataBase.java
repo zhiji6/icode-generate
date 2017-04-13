@@ -68,9 +68,36 @@ public class GenerateDataBase extends IDataBase {
             while (rsc.next()){
                 column = new Column();
                 column.setColumnName(rsc.getString(GType.COLUMN_NAME.toString()));
+                column.setColumnType(Integer.parseInt(rsc.getString(GType.DATA_TYPE.toString())));
+
+                String remarks = rsc.getString(GType.REMARKS.toString());
+                if (remarks.length() < 1)
+                    remarks = "";
+                column.setColumnComment(remarks);
+                column.setIsAutoIncrement(rsc.getString(GType.IS_AUTOINCREMENT.toString()).equals(GType.YES.toString()));
+                column.setIsNullAble(rsc.getString(GType.IS_AUTOINCREMENT.toString()).equals(GType.YES.toString()));
+
+                // 添加列到表中
+                t.getColumnList().add(column);
             }
+            // 设置主键列
+            ResultSet rsPrimary = dbmd.getPrimaryKeys(null, null, t.getTableName());
+            while (rsPrimary.next()) {
+                if (rsPrimary.getString(GType.COLUMN_NAME.toString()) != null) {
+
+                    for (int i = 0; i < t.getColumnList().size(); i++) {
+                        Column col = t.getColumnList().get(i);
+                        if (col.getColumnName().equals(rsPrimary.getString(GType.COLUMN_NAME.toString()))) {
+                            col.setIsPrimary(true);
+                        }
+                    }
+
+                }
+            }
+            tables.add(t);
         }
 
-        return null;
+        database.setTableList(tables);
+        return database;
     }
 }
