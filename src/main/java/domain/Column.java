@@ -1,5 +1,7 @@
 package domain;
 
+import util.StringUtil;
+
 /**
  * Created by Alex_ on 2017/4/13.
  */
@@ -8,10 +10,10 @@ public class Column {
     private String columnName;
     private Integer columnType;
     private String columnComment;
-    private Boolean isPrimary = false; //Ö÷¼ü£¿
-    private Boolean isAutoIncrement = false;  //×Ô¶¯µÝÔö£¿
-        private Boolean isNullAble = false;//ÔÊÐí¿Õ
-    private Boolean isForeignKey = false; //ÔÝÊ±ÆúÓÃ
+    private Boolean isPrimary = false; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private Boolean isAutoIncrement = false;  //ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        private Boolean isNullAble = false;//ï¿½ï¿½ï¿½ï¿½ï¿½
+    private Boolean isForeignKey = false; //ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
     private String fieldName;
     private String fieldType;
     private String fieldGetMethod;
@@ -75,7 +77,8 @@ public class Column {
     }
 
     public String getFieldName() {
-        return fieldName;
+        this.fieldName = StringUtil.getFirstLower(StringUtil.getDomainColumnName(this.columnName));
+        return this.fieldName;
     }
 
     public void setFieldName(String fieldName) {
@@ -83,6 +86,7 @@ public class Column {
     }
 
     public String getFieldType() {
+        this.fieldType = StringUtil.getColumnType(this.columnType);
         return fieldType;
     }
 
@@ -91,6 +95,13 @@ public class Column {
     }
 
     public String getFieldGetMethod() {
+        if(null != this.fieldName){
+            this.fieldGetMethod = StringUtil.getGetMethod(this.fieldName);
+        } else {
+            if(null != this.columnName){
+                this.fieldGetMethod = StringUtil.getGetMethod(this.columnName);
+            }
+        }
         return fieldGetMethod;
     }
 
@@ -99,6 +110,13 @@ public class Column {
     }
 
     public String getFieldSetMethod() {
+        if (null != this.fieldName)
+            this.fieldSetMethod = StringUtil.getSetMethod(this.fieldName);
+        else{
+            if(null != this.columnName){
+                this.fieldSetMethod = StringUtil.getSetMethod(this.columnName);
+            }
+        }
         return fieldSetMethod;
     }
 

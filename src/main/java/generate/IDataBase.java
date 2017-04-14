@@ -3,25 +3,21 @@ package generate;
 import domain.Database;
 import generate.impl.GenerateDataBase;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
  * Created by Alex_ on 2017/4/13.
  */
-public abstract class IDataBase {
+public interface IDataBase {
 
-    public static IDataBase init(String classDriver, String url, String userName, String passWord){
-        return init(classDriver , url ,userName ,passWord , null);
-    }
+    Connection getConnJDBC();
 
-    public static IDataBase init(String classDriver, String url, String userName, String passWord, String schema){
-        return new GenerateDataBase(classDriver , url ,userName , passWord , schema);
-    }
+    Database getDBInfo(String tableNamePattern)throws SQLException;
+
+    Database getDBInfo()throws SQLException;
 
 
-    protected abstract Connection getConnJDBC();
-
-    protected abstract Database getDBInfo(String tableNamePattern)throws SQLException;
 
 }

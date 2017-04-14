@@ -1,5 +1,9 @@
 package domain;
 
+import generate.Generate;
+import org.apache.commons.lang3.StringUtils;
+import util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +22,17 @@ public class Table {
     private String classNameFirstLower;
 
 
-    /**
-     * 第一个主键
-     * @return
-     */
+
     public Column getFirstPrimaryKey(){
         for (Column column : columnList){
             if (column.getIsPrimary())
                 return column;
         }
         return null;
+    }
+
+    public String getLowerDomainClassName() {
+        return StringUtil.getFirstLower(this.getClassName());
     }
 
 
@@ -54,14 +59,31 @@ public class Table {
     }
 
     public String getPackPath() {
+        this.packPath = getPackName().replace(".", "/");
         return packPath;
     }
 
     public String getClassName() {
-        return className;
+        if (Generate.PREFIX.equals("")) {
+            // 鐩存帴杈撳嚭
+            this.className = StringUtil.getFirstUper(StringUtil
+                    .getDomainColumnName(this.tableName));
+        } else {
+            // 鍘婚櫎鍓嶇紑
+            if (this.tableName.startsWith(Generate.PREFIX)) {
+                int pos = this.tableName.indexOf(Generate.PREFIX) + Generate.PREFIX.length();
+                this.className = StringUtil.getFirstUper(StringUtil.getDomainColumnName(this.tableName.substring(pos, this.tableName.length())));
+            } else if (this.tableName.indexOf("_") != -1) {
+                this.className = StringUtil.getFirstUper(StringUtil
+                        .getDomainColumnName(this.tableName.substring( this.tableName.indexOf("_") + 1, this.tableName.length())));
+            }
+        }
+
+        return this.className;
     }
 
     public String getClassNameFirstLower() {
+        this.classNameFirstLower = StringUtils.uncapitalize(this.getClassName());
         return classNameFirstLower;
     }
 

@@ -4,16 +4,20 @@ import domain.Column;
 import domain.Database;
 import domain.Table;
 import generate.*;
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alex_ on 2017/4/13.
  */
-public class GenerateDataBase extends IDataBase {
-
+public class GenerateDataBase implements IDataBase  , ICodeGenerate{
+    private static final Logger logger = Logger.getLogger(GenerateDataBase.class);
     private Connection conn = null;
     private String classDriver;
     private String url ;
@@ -27,13 +31,13 @@ public class GenerateDataBase extends IDataBase {
         this.classDriver = classDriver;
         this.url = url;
         this.userName = userName;
-        this.passWord = passWord;
+        this.passWord = passWord==null? "" :passWord;
         this.schema = schema;
     }
 
 
-    @Override
-    protected Connection getConnJDBC() {
+
+    public Connection getConnJDBC() {
         try{
             Class.forName(classDriver);
             conn = DriverManager.getConnection(url , userName ,passWord);
@@ -46,18 +50,37 @@ public class GenerateDataBase extends IDataBase {
         return conn;
     }
 
-    @Override
-    protected Database getDBInfo(String tableNamePattern) throws SQLException {
+
+    public Database getDBInfo(String tableNamePattern) throws SQLException {
         Database database = new Database();
-        List<Table> tables = new ArrayList<Table>();
-
         this.getConnJDBC();
-
         DatabaseMetaData dbmd = conn.getMetaData();
         //TODO
         database.setDatabaseProductName(dbmd.getDatabaseProductName());
         ResultSet rs = dbmd.getTables(null, null ,tableNamePattern , s);
-        Column column;
+
+        database.setTableList(getTableList(rs , dbmd));
+        return database;
+    }
+
+    public Database getDBInfo() throws SQLException {
+
+        Database databaseBean = new Database();
+        getConnJDBC();
+        DatabaseMetaData dbmd = conn.getMetaData();
+        databaseBean.setDatabaseProductName(dbmd.getDatabaseProductName());
+
+        ResultSet rs = dbmd.getTables(null, this.schema, null, new String[] {GType.TABLE.toString(), GType.VIEW.toString() });
+
+        databaseBean.setTableList(getTableList(rs ,dbmd));
+        return databaseBean;
+    }
+
+
+    private List<Table> getTableList(ResultSet rs , DatabaseMetaData dbmd)throws SQLException{
+
+        List<Table> tableList = new ArrayList<Table>();
+
         while (rs.next()){
             Table t = new Table();
             t.setTableName(rs.getString(GType.TABLE_NAME.toString()));
@@ -65,6 +88,8 @@ public class GenerateDataBase extends IDataBase {
             t.setTableSchem(rs.getString(1));
 
             ResultSet rsc = dbmd.getColumns(null ,null,t.getTableName(),null);
+
+            Column column ;
             while (rsc.next()){
                 column = new Column();
                 column.setColumnName(rsc.getString(GType.COLUMN_NAME.toString()));
@@ -77,10 +102,9 @@ public class GenerateDataBase extends IDataBase {
                 column.setIsAutoIncrement(rsc.getString(GType.IS_AUTOINCREMENT.toString()).equals(GType.YES.toString()));
                 column.setIsNullAble(rsc.getString(GType.IS_AUTOINCREMENT.toString()).equals(GType.YES.toString()));
 
-                // ÃÌº”¡–µΩ±Ì÷–
                 t.getColumnList().add(column);
             }
-            // …Ë÷√÷˜º¸¡–
+
             ResultSet rsPrimary = dbmd.getPrimaryKeys(null, null, t.getTableName());
             while (rsPrimary.next()) {
                 if (rsPrimary.getString(GType.COLUMN_NAME.toString()) != null) {
@@ -94,10 +118,55 @@ public class GenerateDataBase extends IDataBase {
 
                 }
             }
-            tables.add(t);
-        }
+            /*// ËÆæÁΩÆÂ§ñÈîÆÂàó
+            ResultSet rsFPrimary = dbmd.getImportedKeys(null, null, table.getTableName());
+            while (rsFPrimary.next()) {
 
-        database.setTableList(tables);
-        return database;
+                for (int i = 0; i < table.getColumnList().size(); i++) {
+                    Column coltemp = table.getColumnList().get(i);
+                    if (coltemp.getColumnName().equals(rsFPrimary.getString("FKCOLUMN_NAME"))) {
+                        //System.out.println("FKCOLUMN_NAME "+rsFPrimary.getString("FKCOLUMN_NAME"));
+                        coltemp.setForeignKey(true);
+                    }
+                }
+            }*/
+            tableList.add(t);
+        }
+        return tableList;
+    }
+
+
+    public boolean generate(String classPackage, String author, String contact, String codePath) {
+
+        String sourcePath = codePath + File.separator + "src/";
+        Long start = System.currentTimeMillis();
+        try{
+            String schema = url.substring(url.lastIndexOf("/") + 1);
+            Database databaseBean = getDBInfo();
+            List<Table> tableList = databaseBean.getTableList();
+            logger.info("----------- start -----------");
+
+            for (Table table : tableList){
+                table.setPackName(classPackage);
+                Map<String , Object> map = new HashedMap();
+                map.put("table" , table);
+                map.put("contact" , contact);
+                map.put("author" , author);
+
+                //TODO ...
+            }
+
+            logger.info("--------------- end timeÔºö" + (System.currentTimeMillis() - start) + "ms-----");
+            logger.info("‰ª£Á†ÅË∑ØÂæÑÔºö" + codePath);
+            logger.info("ÂåÖÔºö" + classPackage);
+            logger.info("‰ΩúËÄÖÔºö" + author);
+            logger.info("ËÅîÁ≥ªÔºö" + contact);
+            logger.info("------------------------------------");
+            return true;
+
+        }catch (Exception e){
+            logger.error("generate(): generate error!!!");
+        }
+        return false;
     }
 }
