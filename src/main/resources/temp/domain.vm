@@ -1,0 +1,35 @@
+##实体类代码
+package ${table.packName}.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+/**
+* ${table.className} domain
+* @author : icode
+*/
+@Table(name="${table.tableName}")
+public class ${table.className} implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
+#foreach( $tempColumn in $table.columnList)
+    #if(${tempColumn.columnComment.trim()} != '')
+//${tempColumn.columnComment.trim()}
+    #end
+private ${tempColumn.fieldType} ${tempColumn.columnName};
+#end
+    public ${table.className}(){}
+
+#foreach( $tempColumn in $table.columnList )
+    #if(${tempColumn.fieldType}=="Date")
+    #end
+public ${tempColumn.fieldType} ${tempColumn.fieldGetMethod}() {
+        return ${tempColumn.columnName};
+    }
+
+    public void ${tempColumn.fieldSetMethod}(${tempColumn.fieldType} ${tempColumn.columnName}) {
+        this.${tempColumn.columnName} = ${tempColumn.columnName};
+    }
+
+#end
+}

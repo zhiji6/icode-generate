@@ -18,8 +18,7 @@ public class VelocityUtil {
         VelocityContext context = new VelocityContext();
 
         VelocityEngine ve = new VelocityEngine();
-        String vPath = System.getProperty("user.dir") + "\\template";
-
+        String vPath = System.getProperty("user.dir") + "\\src\\main\\resources\\temp";
         ve.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, vPath);
         ve.setProperty(Velocity.INPUT_ENCODING, "UTF-8");
         ve.setProperty(Velocity.OUTPUT_ENCODING, "UTF-8");

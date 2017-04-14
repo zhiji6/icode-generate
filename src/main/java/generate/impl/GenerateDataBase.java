@@ -6,6 +6,7 @@ import domain.Table;
 import generate.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
+import util.VelocityUtil;
 
 import java.io.File;
 import java.sql.*;
@@ -24,17 +25,26 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
     private String userName;
     private String passWord;
     private String schema;
+    private String tableName;
 
     private final String[] s = new String[]{GType.TABLE.toString(), GType.VIEW.toString()};
-    
-    public GenerateDataBase(String classDriver, String url, String userName, String passWord, String schema){
+
+    public  GenerateDataBase(String classDriver , String url , String userName , String passWord){
+        this(classDriver ,url , userName , passWord , null , null);
+    }
+    public GenerateDataBase(String classDriver, String url, String userName, String passWord,String tableName, String schema){
+        init(classDriver , url , userName , passWord , tableName , schema);
+    }
+
+    private GenerateDataBase init(String classDriver, String url, String userName, String passWord,String tableName, String schema){
         this.classDriver = classDriver;
         this.url = url;
         this.userName = userName;
         this.passWord = passWord==null? "" :passWord;
+        this.tableName = tableName;
         this.schema = schema;
+        return this;
     }
-
 
 
     public Connection getConnJDBC() {
@@ -55,7 +65,6 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
         Database database = new Database();
         this.getConnJDBC();
         DatabaseMetaData dbmd = conn.getMetaData();
-        //TODO
         database.setDatabaseProductName(dbmd.getDatabaseProductName());
         ResultSet rs = dbmd.getTables(null, null ,tableNamePattern , s);
 
@@ -70,7 +79,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
         DatabaseMetaData dbmd = conn.getMetaData();
         databaseBean.setDatabaseProductName(dbmd.getDatabaseProductName());
 
-        ResultSet rs = dbmd.getTables(null, this.schema, null, new String[] {GType.TABLE.toString(), GType.VIEW.toString() });
+        ResultSet rs = dbmd.getTables(null, this.schema, null, s);
 
         databaseBean.setTableList(getTableList(rs ,dbmd));
         return databaseBean;
@@ -118,7 +127,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
                 }
             }
-            /*// 设置外键列
+            /*// 设置外键�?
             ResultSet rsFPrimary = dbmd.getImportedKeys(null, null, table.getTableName());
             while (rsFPrimary.next()) {
 
@@ -140,9 +149,16 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
         String sourcePath = codePath + File.separator + "src/";
         Long start = System.currentTimeMillis();
+        Database databaseBean ;
         try{
-            String schema = url.substring(url.lastIndexOf("/") + 1);
-            Database databaseBean = getDBInfo();
+            if (null == this.schema|| "".equals(this.schema))
+                new NullPointerException();
+
+            if (null != tableName && !"".equals(tableName.trim()))
+                databaseBean = getDBInfo(tableName);
+            else
+                databaseBean = getDBInfo();
+
             List<Table> tableList = databaseBean.getTableList();
             logger.info("----------- start -----------");
 
@@ -151,22 +167,23 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
                 Map<String , Object> map = new HashedMap();
                 map.put("table" , table);
                 map.put("contact" , contact);
-                map.put("author" , author);
+                map.put("author", author);
 
                 //TODO ...
+                VelocityUtil.generatorCode("domain.vm", map, sourcePath + table.getPackPath() + "/domain", table.getClassName() + ".java");
             }
 
-            logger.info("--------------- end time：" + (System.currentTimeMillis() - start) + "ms-----");
-            logger.info("代码路径：" + codePath);
-            logger.info("包：" + classPackage);
-            logger.info("作者：" + author);
-            logger.info("联系：" + contact);
+            logger.info("--------------- end time:" + (System.currentTimeMillis() - start) + "ms-----");
+            logger.info("the code path:" + codePath);
+            logger.info("package:" + classPackage);
+            logger.info("author:" + author);
+            logger.info("contact:" + contact);
             logger.info("------------------------------------");
             return true;
 
         }catch (Exception e){
             logger.error("generate(): generate error!!!");
+            return false;
         }
-        return false;
     }
 }

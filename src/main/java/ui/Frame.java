@@ -23,6 +23,7 @@ import javax.swing.text.JTextComponent;
 import generate.Generate;
 import generate.IDataBase;
 import generate.impl.GenerateDataBase;
+import org.apache.commons.lang3.StringUtils;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 /**
@@ -35,6 +36,7 @@ public class Frame extends JFrame{
     private JTextField txt_username;
     private JTextField txt_password;
     private JTextField txt_tableprefix;
+    private JTextField txt_tableName;
     private final String[] drivers = { "com.mysql.jdbc.Driver", "oracle.jdbc.dirver.OracleDriver" };
     private JTextField txt_url;
 
@@ -94,7 +96,7 @@ public class Frame extends JFrame{
      */
     void init(){
 
-        setTitle("unique-web代码生成器");
+        setTitle("icode-generate");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 377, 490);
         contentPane = new JPanel();
@@ -102,15 +104,14 @@ public class Frame extends JFrame{
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        final JComboBox comboBox_driver = new JComboBox(drivers);
-        comboBox_driver.setBounds(110, 30, 205, 25);
-        contentPane.add(comboBox_driver);
-
         JLabel label = new JLabel("数据库连接：");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         label.setBounds(10, 35, 90, 15);
         contentPane.add(label);
+
+        final JComboBox comboBox_driver = new JComboBox(drivers);
+        comboBox_driver.setBounds(110, 30, 205, 25);
+        contentPane.add(comboBox_driver);
 
         JLabel lblUsername = new JLabel("用户名：");
         lblUsername.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -118,17 +119,17 @@ public class Frame extends JFrame{
         lblUsername.setBounds(10, 75, 90, 15);
         contentPane.add(lblUsername);
 
-        JLabel lblPassword = new JLabel("登录密码：");
-        lblPassword.setVerticalAlignment(SwingConstants.BOTTOM);
-        lblPassword.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblPassword.setBounds(10, 115, 90, 15);
-        contentPane.add(lblPassword);
-
         txt_username = new JTextField();
         txt_username.setText("root");
         txt_username.setBounds(110, 70, 205, 25);
         contentPane.add(txt_username);
         txt_username.setColumns(10);
+
+        JLabel lblPassword = new JLabel("密码：");
+        lblPassword.setVerticalAlignment(SwingConstants.BOTTOM);
+        lblPassword.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblPassword.setBounds(10, 115, 90, 15);
+        contentPane.add(lblPassword);
 
         txt_password = new JTextField();
         txt_password.setText("root");
@@ -140,16 +141,16 @@ public class Frame extends JFrame{
         btn_test.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
         btn_test.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(validation()){
+                if (validation()) {
                     String classDriver = comboBox_driver.getSelectedItem().toString();
                     String url = txt_url.getText();
                     String username = txt_username.getText();
                     String password = txt_password.getText();
-                    iDataBase = new GenerateDataBase(classDriver , url , username , password ,"");
+                    iDataBase = new GenerateDataBase(classDriver, url, username, password);
                     Connection conn = iDataBase.getConnJDBC();
-                    if(null != conn){
+                    if (null != conn) {
                         showInfo("连接成功！");
-                    } else{
+                    } else {
                         showError("数据库连接失败，请检查后重试！");
                     }
                 }
@@ -161,27 +162,36 @@ public class Frame extends JFrame{
         JButton btn_gener = new JButton("生成代码");
         btn_gener.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(validation()){
+                if (validation()) {
                     String classDriver = comboBox_driver.getSelectedItem().toString();
                     String url = txt_url.getText();
                     String username = txt_username.getText();
                     String password = txt_password.getText();
                     String classPackage = txt_package.getText();
-                    String author = txt_author.getText();
+                    String author = Generate.AUTHOR;
+                    //String author = txt_author.getText();
                     String outPath = txt_outdir.getText();
-                    String prefix = txt_tableprefix.getText();
-                    String contact = txt_contact.getText();
-                    Generate.PREFIX = prefix;
-                    generate = new Generate(classDriver , url ,username , password);
-                    boolean flag = generate.generate(classPackage , author , contact , null);
-                    if(flag){
-                        int response = JOptionPane.showOptionDialog(Frame.this, "代码已经生成，是否打开输出目录？", "确认", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                        if(response == 0){
-                            //打开文件夹
-                            try {
-                                Runtime.getRuntime().exec("cmd.exe /c start "+ outPath);
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
+                    //String prefix = txt_tableprefix.getText();
+                    String contact = Generate.CONTACT;
+                    //String contact = txt_contact.getText();
+                    //Generate.PREFIX = prefix;
+                    String tableName = txt_tableName.getText();
+
+                    String schema = url.substring(url.lastIndexOf("/") + 1);
+                    if (StringUtils.isBlank(schema))
+                        showError("请检查数据库url是否完整");
+                    else{
+                        generate = new Generate(classDriver, url, username, password , tableName ,schema);
+                        boolean flag = generate.generate(classPackage, author, contact, outPath);
+                        if (flag) {
+                            int response = JOptionPane.showOptionDialog(Frame.this, "代码已经生成，是否打开输出目录？", "确认", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                            if (response == 0) {
+                                //打开文件夹
+                                try {
+                                    Runtime.getRuntime().exec("cmd.exe /c start " + outPath);
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -192,15 +202,26 @@ public class Frame extends JFrame{
         btn_gener.setBounds(220, 415, 95, 25);
         contentPane.add(btn_gener);
 
-        txt_tableprefix = new JTextField();
+        /*txt_tableprefix = new JTextField();
         txt_tableprefix.setColumns(10);
-        txt_tableprefix.setBounds(110, 190, 205, 25);
+        txt_tableprefix.setBounds(110, 225, 205, 25);
         contentPane.add(txt_tableprefix);
 
         JLabel label_1 = new JLabel("数据表前缀：");
         label_1.setVerticalAlignment(SwingConstants.BOTTOM);
         label_1.setHorizontalAlignment(SwingConstants.RIGHT);
-        label_1.setBounds(10, 195, 90, 15);
+        label_1.setBounds(10, 230, 90, 15);
+        contentPane.add(label_1);*/
+
+        txt_tableName = new JTextField();
+        txt_tableName.setColumns(10);
+        txt_tableName.setBounds(110, 225, 205, 25);
+        contentPane.add(txt_tableName);
+
+        JLabel label_1 = new JLabel("数据库表：");
+        label_1.setVerticalAlignment(SwingConstants.BOTTOM);
+        label_1.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_1.setBounds(10, 230, 90, 15);
         contentPane.add(label_1);
 
         JLabel lblUrl = new JLabel("数据库URL：");
@@ -210,7 +231,7 @@ public class Frame extends JFrame{
         contentPane.add(lblUrl);
 
         txt_url = new JTextField();
-        txt_url.setText("jdbc:mysql://127.0.0.1:3306/test");
+        txt_url.setText("jdbc:mysql://127.0.0.1:3306/");
         txt_url.setColumns(10);
         txt_url.setBounds(110, 150, 205, 25);
         contentPane.add(txt_url);
@@ -225,17 +246,14 @@ public class Frame extends JFrame{
         label_2.setBounds(10, 299, 90, 15);
         contentPane.add(label_2);
 
-        txt_author = new JTextField();
-        txt_author.setText("王爵");
-        txt_author.setColumns(10);
-        txt_author.setBounds(110, 294, 205, 25);
-        contentPane.add(txt_author);
+        JLabel label_a = new JLabel("alex / jiayu");
+        label_a.setBounds(110, 294, 205, 25);
+        contentPane.add(label_a);
 
-        txt_contact = new JTextField();
-        txt_contact.setText("biezhi.me@gmail.com");
-        txt_contact.setColumns(10);
-        txt_contact.setBounds(110, 334, 205, 25);
-        contentPane.add(txt_contact);
+
+        JLabel label_c = new JLabel("alexdennis.lam@gmail.com");
+        label_c.setBounds(110, 334, 205, 25);
+        contentPane.add(label_c);
 
         JLabel label_3 = new JLabel("联系方式：");
         label_3.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -244,15 +262,15 @@ public class Frame extends JFrame{
         contentPane.add(label_3);
 
         txt_package = new JTextField();
-        txt_package.setText("com.exemple");
+        txt_package.setText("com.icode");
         txt_package.setColumns(10);
-        txt_package.setBounds(110, 225, 205, 25);
+        txt_package.setBounds(110, 190, 205, 25);
         contentPane.add(txt_package);
 
         JLabel label_4 = new JLabel("生成包前缀：");
         label_4.setVerticalAlignment(SwingConstants.BOTTOM);
         label_4.setHorizontalAlignment(SwingConstants.RIGHT);
-        label_4.setBounds(10, 230, 90, 15);
+        label_4.setBounds(10, 195, 90, 15);
         contentPane.add(label_4);
 
         JLabel label_5 = new JLabel("生成目录：");
@@ -262,7 +280,7 @@ public class Frame extends JFrame{
         contentPane.add(label_5);
 
         txt_outdir = new JTextField();
-        txt_outdir.setText("F:/exemple");
+        txt_outdir.setText("D:/exemple");
         txt_outdir.setColumns(10);
         txt_outdir.setBounds(110, 369, 205, 25);
         contentPane.add(txt_outdir);
@@ -277,7 +295,7 @@ public class Frame extends JFrame{
      */
     public boolean validation(){
         if(isEmpty(txt_username)){
-            showWarning("username不能为空！");
+            showWarning("用户名不能为空！");
             txt_username.requestFocus();
             return false;
         }
@@ -287,7 +305,7 @@ public class Frame extends JFrame{
             return false;
         }*/
         if(isEmpty(txt_url)){
-            showWarning("url不能为空！");
+            showWarning("数据库URL不能为空！");
             txt_url.requestFocus();
             return false;
         }

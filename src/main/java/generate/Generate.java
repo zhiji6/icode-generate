@@ -12,14 +12,16 @@ public class Generate implements ICodeGenerate{
     public static final String CONTACT = "467146659@qq.com/alexdennis.lam@gmail.com";
     public static String PREFIX = "";
 
+    //protected String tableName;
+
     ICodeGenerate iCodeGenerate = null;
 
-    public Generate(String classDriver, String url, String userName, String passWord){
-        this(classDriver , url , userName , passWord , null);
+    public Generate(String classDriver, String url, String userName, String passWord , String tableName){
+        this(classDriver , url , userName , passWord , tableName , null);
     }
 
-    public Generate(String classDriver, String url, String userName, String passWord , String schema){
-        iCodeGenerate = new GenerateDataBase(classDriver , url , userName , passWord , schema);
+    public Generate(String classDriver, String url, String userName, String passWord ,String tableName, String schema){
+        iCodeGenerate = new GenerateDataBase(classDriver , url , userName , passWord ,tableName ,  schema);
     }
 
     public boolean generate(String classPackage, String author, String contact, String codePath) {
