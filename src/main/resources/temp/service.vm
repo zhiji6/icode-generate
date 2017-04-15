@@ -1,0 +1,9 @@
+package ${table.packName}.service;
+
+import ${table.packName}.config.BaseService;
+import ${table.packName}.domain.${table.className};
+
+
+public interface ${table.className}Service extends BaseService<${table.className}> {
+
+}

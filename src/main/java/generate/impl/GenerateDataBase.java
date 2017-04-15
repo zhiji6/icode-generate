@@ -172,6 +172,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
                 //TODO ...
                 VelocityUtil.generatorCode("domain.vm", map, sourcePath + table.getPackPath() + "/domain", table.getClassName() + ".java");
+                VelocityUtil.generatorCode("controller.vm", map, sourcePath + table.getPackPath() + "/controller", table.getClassName() + "Controller.java");
             }
 
             logger.info("--------------- end time:" + (System.currentTimeMillis() - start) + "ms-----");

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Alex_ on 2017/4/13.
  */
-public class Table {
+public class Table extends Config{
 
     private String tableSchem;
     private String tableName;
