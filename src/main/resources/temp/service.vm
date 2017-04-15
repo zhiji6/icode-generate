@@ -2,8 +2,11 @@ package ${table.packName}.service;
 
 import ${table.packName}.config.BaseService;
 import ${table.packName}.domain.${table.className};
-
+import java.util.List;
 
 public interface ${table.className}Service extends BaseService<${table.className}> {
 
+    void deleteByIds(Long[] ids);
+
+    List<${table.className}> select${table.className}Page(${table.className} ${table.classNameFirstLower} , Integer page , Integer rows);
 }

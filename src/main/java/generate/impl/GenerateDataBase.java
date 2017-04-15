@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * generate 中心实现类
+ * generate 中心实现�?
  * Created by Alex_ on 2017/4/13.
  */
 public class GenerateDataBase implements IDataBase  , ICodeGenerate{
@@ -170,9 +170,13 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
                 map.put("contact" , contact);
                 map.put("author", author);
 
-                //TODO ...
+                // ...
                 VelocityUtil.generatorCode("domain.vm", map, sourcePath + table.getPackPath() + "/domain", table.getClassName() + ".java");
                 VelocityUtil.generatorCode("controller.vm", map, sourcePath + table.getPackPath() + "/controller", table.getClassName() + "Controller.java");
+                VelocityUtil.generatorCode("mapper.vm", map, sourcePath + table.getPackPath() + "/mapper", table.getClassName() + "Mapper.java");
+                VelocityUtil.generatorCode("service.vm", map, sourcePath + table.getPackPath() + "/service", table.getClassName() + "Service.java");
+                VelocityUtil.generatorCode("service_impl.vm", map, sourcePath + table.getPackPath() + "/service/impl", table.getClassName() + "ServiceImpl.java");
+                VelocityUtil.generatorCode("mapper_xml.vm", map, sourcePath + table.getPackPath() + "/mapper-xml", table.getClassName() + "Mapper.xml");
             }
 
             logger.info("--------------- end time:" + (System.currentTimeMillis() - start) + "ms-----");

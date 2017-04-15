@@ -59,7 +59,7 @@ public class ${table.className}Controller extends BaseCRUDController<${table.cla
 
     @RequestMapping("/admin/update${table.className}")
     public String update(${table.className} ${table.classNameFirstLower} , Model model){
-        ${table.classNameFirstLower}Service.update${table.className}(ids);
+        ${table.classNameFirstLower}Service.update(${table.classNameFirstLower});
         return "";
     }
 

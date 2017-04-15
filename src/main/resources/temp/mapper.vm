@@ -1,0 +1,13 @@
+package ${table.packName}.mapper;
+
+import ${table.packName}.domain.${table.className};
+import ${table.packName}.util.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+
+public interface ${table.classNameFirstLower}Mapper extends BaseMapper<${table.className}> {
+
+    void deleteByIds(Long[] ids);
+
+    List<${table.className}> select${table.className}Page(${table.className} ${table.classNameFirstLower});
+}

@@ -17,7 +17,10 @@ public class ${table.className} implements Serializable {
     #end
 #if(${tempColumn.isPrimary})
 @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+#end
+#if(${tempColumn.isGenColumType})
+@Column(name = "${tempColumn.columnName}")
 #end
 private ${tempColumn.fieldType} ${tempColumn.fieldName};
 #end

@@ -1,0 +1,36 @@
+package ${table.packName}.service.impl;
+
+import com.github.pagehelper.PageHelper;
+import ${table.packName}.config.BaseServiceImpl;
+import ${table.packName}.domain.${table.className};
+import ${table.packName}.mapper.${table.className}Mapper;
+import ${table.packName}.service.${table.className}Service;
+import ${table.packName}.util.BaseMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+
+@Service
+public class ${table.className}ServiceImpl extends BaseServiceImpl<${table.className}> implements ${table.className}Service{
+    @Autowired
+    private ${table.className}Mapper ${table.classNameFirstLower}Mapper;
+    @Override
+    protected BaseMapper<${table.className}> getBaseMapper() {
+        return ${table.classNameFirstLower}Mapper;
+    }
+
+    public void deleteByIds(Long[] ids){
+        if(0 == ids.length)
+            return ;
+        ${table.classNameFirstLower}Mapper.deleteByIds(ids);
+    }
+
+    public List<${table.className}> select${table.className}Page(${table.className} ${table.classNameFirstLower} , Integer page , Integer rows){
+        PageHelper.startPage(page, rows, "id desc");
+
+        return ${table.classNameFirstLower}Mapper.select${table.className}Page(${table.classNameFirstLower});
+    }
+
+}

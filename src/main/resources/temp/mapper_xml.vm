@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="${table.packName}.mapper.${table.className}Mapper" >
+    <resultMap id="BaseResultMap" type="${table.packName}.domain.${table.className}" >
+#foreach( $tempColumn in $table.columnList)
+#if(${tempColumn.isPrimary})
+<id column="${tempColumn.columnName}" jdbcType="${tempColumn.columnTypeStringName}" javaType="java.lang.${tempColumn.fieldType}" property="${tempColumn.fieldName}"/>
+#end
+#if(!${tempColumn.isPrimary})
+<result column="${tempColumn.columnName}" jdbcType="${tempColumn.columnTypeStringName}" javaType="java.lang.${tempColumn.fieldType}" property="${tempColumn.fieldName}"/>
+#end
+#end
+  </resultMap>
+
+    <sql id="baseColum">
+    #foreach( $tempColumn in $table.columnList)
+    ${tempColumn.columnName},
+    #end
+ </sql>
+
+    <delete id="deleteByIds" parameterType="long">
+        delete * from ${table.tableName} where id in
+        <foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <select id="select${table.className}Page" resultMap="BaseResultMap">
+        SELECT *
+        FROM ${table.tableName}
+        <where>
+        #foreach( $tempColumn in $table.columnList)
+    <if test="${tempColumn.fieldName} != null">
+                ${tempColumn.columnName} = #{${tempColumn.fieldName}}
+            </if>
+        #end
+</where>
+    </select>
+
+</mapper>

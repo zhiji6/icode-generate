@@ -9,6 +9,7 @@ public class Column {
 
     private String columnName;
     private Integer columnType;
+    private String columnTypeStringName;//数据库字段类型名称
     private String columnComment;
     private Boolean isPrimary = false; //is primary ?
     private Boolean isAutoIncrement = false;  //is auto increment?
@@ -123,4 +124,50 @@ public class Column {
     public void setFieldSetMethod(String fieldSetMethod) {
         this.fieldSetMethod = fieldSetMethod;
     }
+
+    public Boolean getIsGenColumType(){
+        String[] s = columnName.split("_");
+        return s.length>2||s.length==2?true:false;
+    }
+
+    public String getColumnTypeStringName() {
+        switch (this.columnType) {
+            case java.sql.Types.DECIMAL:
+                this.columnTypeStringName = "DECIMAL";
+            case java.sql.Types.REAL:
+                this.columnTypeStringName = "REAL";
+                break;
+            case java.sql.Types.INTEGER:
+                this.columnTypeStringName = "INTEGER";
+                break;
+            case java.sql.Types.BIGINT:
+                this.columnTypeStringName = "BIGINT";
+                break;
+            case java.sql.Types.TINYINT:
+                this.columnTypeStringName = "TINYINT";
+                break;
+            case java.sql.Types.VARCHAR:
+                this.columnTypeStringName = "VARCHAR";
+                break;
+            case java.sql.Types.CHAR:
+                this.columnTypeStringName = "CHAR";
+                break;
+            case java.sql.Types.LONGVARBINARY:
+                this.columnTypeStringName = "LONGVARBINARY";
+                break;
+            case java.sql.Types.LONGVARCHAR:
+                this.columnTypeStringName = "LONGVARCHAR";
+                break;
+
+            case java.sql.Types.DATE:
+            case java.sql.Types.TIMESTAMP:
+                this.columnTypeStringName = "TIMESTAMP";
+                break;
+            default:
+                break;
+        }
+        return columnTypeStringName;
+
+    }
+
 }
