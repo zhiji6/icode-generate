@@ -10,10 +10,10 @@ public class Column {
     private String columnName;
     private Integer columnType;
     private String columnComment;
-    private Boolean isPrimary = false; //������
-    private Boolean isAutoIncrement = false;  //�Զ�������
-        private Boolean isNullAble = false;//�����
-    private Boolean isForeignKey = false; //��ʱ����
+    private Boolean isPrimary = false; //is primary ?
+    private Boolean isAutoIncrement = false;  //is auto increment?
+    private Boolean isNullAble = false;//is null?
+    private Boolean isForeignKey = false; //abandon
     private String fieldName;
     private String fieldType;
     private String fieldGetMethod;

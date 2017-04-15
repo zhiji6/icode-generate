@@ -15,7 +15,11 @@ public class ${table.className} implements Serializable {
     #if(${tempColumn.columnComment.trim()} != '')
 //${tempColumn.columnComment.trim()}
     #end
-private ${tempColumn.fieldType} ${tempColumn.columnName};
+#if(${tempColumn.isPrimary})
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+#end
+private ${tempColumn.fieldType} ${tempColumn.fieldName};
 #end
     public ${table.className}(){}
 
@@ -23,11 +27,11 @@ private ${tempColumn.fieldType} ${tempColumn.columnName};
     #if(${tempColumn.fieldType}=="Date")
     #end
 public ${tempColumn.fieldType} ${tempColumn.fieldGetMethod}() {
-        return ${tempColumn.columnName};
+        return ${tempColumn.fieldName};
     }
 
-    public void ${tempColumn.fieldSetMethod}(${tempColumn.fieldType} ${tempColumn.columnName}) {
-        this.${tempColumn.columnName} = ${tempColumn.columnName};
+    public void ${tempColumn.fieldSetMethod}(${tempColumn.fieldType} ${tempColumn.fieldName}) {
+        this.${tempColumn.fieldName} = ${tempColumn.fieldName};
     }
 
 #end

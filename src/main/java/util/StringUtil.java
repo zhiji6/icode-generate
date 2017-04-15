@@ -113,7 +113,7 @@ public class StringUtil {
     }
 
 
-    public synchronized static String getPropertyFromFile(String fileName , String key){
+    /*public synchronized static String getPropertyFromFile(String fileName , String key){
 
         String analysisPath = System.getProperty("user.dir") + "\\"+fileName;
         InputStream in ;
@@ -128,7 +128,7 @@ public class StringUtil {
 
         return "";
 
-    }
+    }*/
 
 
 

@@ -132,7 +132,7 @@ public class Frame extends JFrame{
         contentPane.add(lblPassword);
 
         txt_password = new JTextField();
-        txt_password.setText("root");
+        txt_password.setText("123456");
         txt_password.setColumns(10);
         txt_password.setBounds(110, 110, 205, 25);
         contentPane.add(txt_password);
@@ -206,7 +206,6 @@ public class Frame extends JFrame{
         txt_tableprefix.setColumns(10);
         txt_tableprefix.setBounds(110, 225, 205, 25);
         contentPane.add(txt_tableprefix);
-
         JLabel label_1 = new JLabel("数据表前缀：");
         label_1.setVerticalAlignment(SwingConstants.BOTTOM);
         label_1.setHorizontalAlignment(SwingConstants.RIGHT);

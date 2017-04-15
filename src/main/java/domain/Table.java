@@ -66,16 +66,14 @@ public class Table {
     public String getClassName() {
         if (Generate.PREFIX.equals("")) {
             // 直接输出
-            this.className = StringUtil.getFirstUper(StringUtil
-                    .getDomainColumnName(this.tableName));
+            this.className = StringUtil.getFirstUper(StringUtil.getDomainColumnName(this.tableName));
         } else {
             // 去除前缀
             if (this.tableName.startsWith(Generate.PREFIX)) {
                 int pos = this.tableName.indexOf(Generate.PREFIX) + Generate.PREFIX.length();
                 this.className = StringUtil.getFirstUper(StringUtil.getDomainColumnName(this.tableName.substring(pos, this.tableName.length())));
             } else if (this.tableName.indexOf("_") != -1) {
-                this.className = StringUtil.getFirstUper(StringUtil
-                        .getDomainColumnName(this.tableName.substring( this.tableName.indexOf("_") + 1, this.tableName.length())));
+                this.className = StringUtil.getFirstUper(StringUtil.getDomainColumnName(this.tableName.substring( this.tableName.indexOf("_") + 1, this.tableName.length())));
             }
         }
 
