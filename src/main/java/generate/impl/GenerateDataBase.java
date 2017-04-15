@@ -127,7 +127,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
                 }
             }
-            /*// 设置外键�?
+            /*// ?????????
             ResultSet rsFPrimary = dbmd.getImportedKeys(null, null, table.getTableName());
             while (rsFPrimary.next()) {
 
