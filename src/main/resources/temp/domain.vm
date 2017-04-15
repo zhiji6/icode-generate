@@ -1,4 +1,3 @@
-##实体类代码
 package ${table.packName}.domain;
 
 import java.io.Serializable;
