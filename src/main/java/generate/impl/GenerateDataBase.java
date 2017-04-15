@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * generate 中心实现类
  * Created by Alex_ on 2017/4/13.
  */
 public class GenerateDataBase implements IDataBase  , ICodeGenerate{
@@ -127,7 +128,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
                 }
             }
-            /*// ?????????
+            /*//
             ResultSet rsFPrimary = dbmd.getImportedKeys(null, null, table.getTableName());
             while (rsFPrimary.next()) {
 
