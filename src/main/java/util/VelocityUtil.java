@@ -6,6 +6,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -18,7 +19,8 @@ public class VelocityUtil {
         VelocityContext context = new VelocityContext();
 
         VelocityEngine ve = new VelocityEngine();
-        String vPath = System.getProperty("user.dir") + "\\src\\main\\resources\\temp";
+        String vPath = System.getProperty("user.dir") + "\\vm";
+        //String vPath = getPath();
         ve.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, vPath);
         ve.setProperty(Velocity.INPUT_ENCODING, "UTF-8");
         ve.setProperty(Velocity.OUTPUT_ENCODING, "UTF-8");
@@ -74,4 +76,25 @@ public class VelocityUtil {
         }
     }
 
+    public static String getPath(){
+        return "";
+    }
+
+    private static String getClassPath()
+    {
+        String strClassName = VelocityUtil.class.getName();
+        String strClassFileName = strClassName.substring(strClassName
+                .lastIndexOf(".") + 1, strClassName.length());
+        URL url = null;
+        url = VelocityUtil.class.getResource(strClassFileName + ".class");
+        String strURL = url.toString();
+        strURL = strURL.substring(strURL.indexOf('/') + 1);
+        boolean isWin = false;
+        int index = strURL.indexOf(":");
+        if (index > 0)
+            isWin = true;
+        if (!isWin)
+            return "/" + strURL;
+        return strURL;
+    }
 }
