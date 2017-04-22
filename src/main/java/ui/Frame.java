@@ -137,20 +137,18 @@ public class Frame extends JFrame{
 
         JButton btn_test = new JButton("测试连接");
         btn_test.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-        btn_test.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (validation()) {
-                    String classDriver = comboBox_driver.getSelectedItem().toString();
-                    String url = txt_url.getText();
-                    String username = txt_username.getText();
-                    String password = txt_password.getText();
-                    iDataBase = new GenerateDataBase(classDriver, url, username, password);
-                    Connection conn = iDataBase.getConnJDBC();
-                    if (null != conn) {
-                        showInfo("连接成功！");
-                    } else {
-                        showError("数据库连接失败，请检查后重试！");
-                    }
+        btn_test.addActionListener(e -> {
+            if (validation()) {
+                String classDriver = comboBox_driver.getSelectedItem().toString();
+                String url = txt_url.getText();
+                String username = txt_username.getText();
+                String password = txt_password.getText();
+                iDataBase = new GenerateDataBase(classDriver, url, username, password);
+                Connection conn = iDataBase.getConnJDBC();
+                if (null != conn) {
+                    showInfo("连接成功！");
+                } else {
+                    showError("数据库连接失败，请检查后重试！");
                 }
             }
         });
