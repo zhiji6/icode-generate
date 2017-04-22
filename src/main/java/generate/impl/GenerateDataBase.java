@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * generate 中心实现�?
+ * generate 中心实现�?
  * Created by Alex_ on 2017/4/13.
  */
 public class GenerateDataBase implements IDataBase  , ICodeGenerate{
