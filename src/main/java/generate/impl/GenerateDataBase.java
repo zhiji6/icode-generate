@@ -89,7 +89,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
     private List<Table> getTableList(ResultSet rs , DatabaseMetaData dbmd)throws SQLException{
 
-        List<Table> tableList = new ArrayList<>();
+        List<Table> tableList = new ArrayList<Table>();
 
         while (rs.next()){
             Table t = new Table();
