@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * generate 中心实现�?
+ * generate 中心实现
  * Created by Alex_ on 2017/4/13.
  */
 public class GenerateDataBase implements IDataBase  , ICodeGenerate{
@@ -89,7 +89,7 @@ public class GenerateDataBase implements IDataBase  , ICodeGenerate{
 
     private List<Table> getTableList(ResultSet rs , DatabaseMetaData dbmd)throws SQLException{
 
-        List<Table> tableList = new ArrayList<Table>();
+        List<Table> tableList = new ArrayList<>();
 
         while (rs.next()){
             Table t = new Table();

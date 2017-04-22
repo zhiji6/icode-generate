@@ -1,12 +1,13 @@
 package generate;
 
+import domain.*;
 import generate.impl.GenerateDataBase;
 
 /**
  * @author alex-jiayu
  * @create 2017-04-14 17:12
  **/
-public class Generate implements ICodeGenerate{
+public class Generate{
 
     public static final String AUTHOR = "ALEX/JIAYU";
     public static final String CONTACT = "467146659@qq.com/alexdennis.lam@gmail.com";
@@ -15,6 +16,7 @@ public class Generate implements ICodeGenerate{
     //protected String tableName;
 
     ICodeGenerate iCodeGenerate = null;
+
 
     public Generate(String classDriver, String url, String userName, String passWord , String tableName){
         this(classDriver , url , userName , passWord , tableName , null);
@@ -27,4 +29,5 @@ public class Generate implements ICodeGenerate{
     public boolean generate(String classPackage, String author, String contact, String codePath) {
         return iCodeGenerate.generate(classPackage , author , contact , codePath);
     }
+
 }

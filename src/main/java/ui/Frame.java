@@ -63,23 +63,21 @@ public class Frame extends JFrame{
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-                    UIManager.put("RootPane.setupButtonVisible", false);
-                    //设置本属性将改变窗口边框样式定义
-                    BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
-                    org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-                    // 调整默认字体
-                    for (int i = 0; i < DEFAULT_FONT.length; i++) {
-                        UIManager.put(DEFAULT_FONT[i], new Font("微软雅黑", Font.PLAIN, 13));
-                    }
-                    Frame frame = new Frame();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        EventQueue.invokeLater(() -> {
+            try {
+                BeautyEyeLNFHelper.launchBeautyEyeLNF();
+                UIManager.put("RootPane.setupButtonVisible", false);
+                //设置本属性将改变窗口边框样式定义
+                BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+                BeautyEyeLNFHelper.launchBeautyEyeLNF();
+                // 调整默认字体
+                for (int i = 0; i < DEFAULT_FONT.length; i++) {
+                    UIManager.put(DEFAULT_FONT[i], new Font("微软雅黑", Font.PLAIN, 13));
                 }
+                Frame frame = new Frame();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -160,38 +158,36 @@ public class Frame extends JFrame{
         contentPane.add(btn_test);
 
         JButton btn_gener = new JButton("生成代码");
-        btn_gener.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (validation()) {
-                    String classDriver = comboBox_driver.getSelectedItem().toString();
-                    String url = txt_url.getText();
-                    String username = txt_username.getText();
-                    String password = txt_password.getText();
-                    String classPackage = txt_package.getText();
-                    String author = Generate.AUTHOR;
-                    //String author = txt_author.getText();
-                    String outPath = txt_outdir.getText();
-                    //String prefix = txt_tableprefix.getText();
-                    String contact = Generate.CONTACT;
-                    //String contact = txt_contact.getText();
-                    //Generate.PREFIX = prefix;
-                    String tableName = txt_tableName.getText();
+        btn_gener.addActionListener(e -> {
+            if (validation()) {
+                String classDriver = comboBox_driver.getSelectedItem().toString();
+                String url = txt_url.getText();
+                String username = txt_username.getText();
+                String password = txt_password.getText();
+                String classPackage = txt_package.getText();
+                String author = Generate.AUTHOR;
+                //String author = txt_author.getText();
+                String outPath = txt_outdir.getText();
+                //String prefix = txt_tableprefix.getText();
+                String contact = Generate.CONTACT;
+                //String contact = txt_contact.getText();
+                //Generate.PREFIX = prefix;
+                String tableName = txt_tableName.getText();
 
-                    String schema = url.substring(url.lastIndexOf("/") + 1);
-                    if (StringUtils.isBlank(schema))
-                        showError("请检查数据库url是否完整");
-                    else{
-                        generate = new Generate(classDriver, url, username, password , tableName ,schema);
-                        boolean flag = generate.generate(classPackage, author, contact, outPath);
-                        if (flag) {
-                            int response = JOptionPane.showOptionDialog(Frame.this, "代码已经生成，是否打开输出目录？", "确认", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                            if (response == 0) {
-                                //打开文件夹
-                                try {
-                                    Runtime.getRuntime().exec("cmd.exe /c start " + outPath);
-                                } catch (IOException e1) {
-                                    e1.printStackTrace();
-                                }
+                String schema = url.substring(url.lastIndexOf("/") + 1);
+                if (StringUtils.isBlank(schema))
+                    showError("请检查数据库url是否完整");
+                else{
+                    generate = new Generate(classDriver, url, username, password , tableName ,schema);
+                    boolean flag = generate.generate(classPackage, author, contact, outPath);
+                    if (flag) {
+                        int response = JOptionPane.showOptionDialog(Frame.this, "代码已经生成，是否打开输出目录？", "确认", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        if (response == 0) {
+                            //打开文件夹
+                            try {
+                                Runtime.getRuntime().exec("cmd.exe /c start " + outPath);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
                             }
                         }
                     }
