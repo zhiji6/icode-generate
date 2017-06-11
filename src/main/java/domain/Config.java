@@ -13,6 +13,8 @@ public class Config {
 
     protected boolean generateHtml = false;
 
+    protected boolean generateExcel = false;
+
 
     public void setBatchDeletes(boolean batchDeletes) {
         isBatchDeletes = batchDeletes;
@@ -28,5 +30,9 @@ public class Config {
 
     public void setGenerateHtml(boolean generateHtml) {
         this.generateHtml = generateHtml;
+    }
+
+    public void setGenerateExcel(boolean generateExcel) {
+        this.generateExcel = generateExcel;
     }
 }
