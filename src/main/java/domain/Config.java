@@ -15,7 +15,6 @@ public class Config {
 
     protected boolean generateExcel = false;
 
-
     public void setBatchDeletes(boolean batchDeletes) {
         isBatchDeletes = batchDeletes;
     }
